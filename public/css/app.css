@@ -1,0 +1,114 @@
+/* Overrides */
+* {
+    border-radius: 0 !important;
+    font-family: 'Poppins', sans-serif !important;
+}
+
+/* body {
+    background-image: url('../NCFLBldgBlacked.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+} */
+
+.navbar {
+    background-color: #139f4a !important;
+}
+
+
+input, span, a, button, p, div, label {
+    font-size: 13px !important; 
+}
+
+input, select, a.btn {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+button {
+    box-shadow: none !important;
+}
+
+table {
+  box-shadow: none !important;
+  border: none !important;
+  font-size: 11px;
+}
+
+table thead th {
+    border-top: 1px solid #dee2e6 !important;
+    background-color: white !important;
+    overflow: hidden;
+}
+
+table tfoot th {
+    border-top: none !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+table thead th,
+table tbody td,
+table tfoot th {
+  font-weight: 400 !important;
+  border-right: none !important;
+  border-color: #dee2e6 !important;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+table tbody tr td {
+    border-top: 1px solid #dee2e6 !important;
+}
+
+table tbody tr:first-child td {
+    border-top: none !important;
+}
+
+table tbody tr:last-child td {
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+table thead th:last-child,
+table tbody td:last-child,
+table tfoot th:last-child {
+  border-right: 1px solid #dee2e6 !important;
+}
+
+tfoot th {
+    padding: 8px !important;
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 4.5px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    border: 1px solid #aaaaaa;
+    background-color: #ffffff;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background-color: #e7e7e7;
+}
+
+.list-group-item {
+    padding: 16px !important;
+}
+
+.form-text {
+    font-size: 12px !important;
+}
+
+.feather-info {
+    padding-right: 5px;
+    width: 24px;
+    height: 24px;
+}
+
+.dataTables_filter input {
+    border-color: #ced4da !important;
+}
+
+.modal-title {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}

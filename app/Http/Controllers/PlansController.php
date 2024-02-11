@@ -2,54 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
-use Carbon\Carbon;
 use App\Models\Plan;
-use App\Models\Action;
-use App\Models\Excess;
-use App\Models\Series;
-use App\Models\Status;
-use App\Models\Assignee;
-use App\Models\Position;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class PublisherController extends Controller
+class PlansController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    public function generate()
+    public function getPlanFeeById(Request $request)
     {
-        DB::beginTransaction();
-        try {
-            $currentSeries = Carbon::now()->format('M') . ' ' . Carbon::now()->format('Y');
-            $series = Series::where('description', $currentSeries)->first();
+        $plan = Plan::select('subscription_fee')
+            ->where('id', $request->query('id'))
+            ->first();
 
-            if (!$series) {
-                Series::create([
-                    'description' => $currentSeries
-                ]);
-
-                $user = auth()->user();
-                $action = Action::select('id')
-                    ->where('description', 'generate worksheet')
-                    ->first();
-
-                createActionLog($user, $action, 'Generated ' . $currentSeries . ' Monthly Worksheet');
-
-                DB::commit();
-
-                return $currentSeries . ' worksheet generated successfully.';
-            } else {
-                return 'Series ' . $currentSeries . ' already exists.';
-            }
-        } catch (Throwable $th) {
-            DB::rollBack();
-            return 'Error on generating worksheet. Please contact ISD for support. ' . $th->getMessage();
-        }
+        return $plan->subscription_fee;
     }
 
     /**
@@ -59,10 +28,10 @@ class PublisherController extends Controller
      */
     public function index()
     {
-        $series = Series::all();
+        $plans = Plan::all();
 
-        return view('publisher.index', [
-            'series' => $series
+        return view('publisher.plans', [
+            'plans' => $plans
         ]);
     }
 

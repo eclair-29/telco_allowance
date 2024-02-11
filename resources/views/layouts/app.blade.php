@@ -16,17 +16,25 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/libs/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/libs/datatables.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <!-- Scripts -->
+    <script src="{{ asset('js/libs/jquery.js') }}"></script>
+    <script src="{{ asset('js/libs/datatables.js') }}"></script>
     <script src="{{ asset('js/libs/bootstrap.js') }}"></script>
+    <script src="{{ asset('js/libs/feather.js') }}"></script>
 </head>
 
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand fw-bold" href="{{ 
+                        auth()->user() 
+                            ? auth()->user()->hasRole('publisher') ? url('/publisher') : url('/approver')
+                            : url('/login')
+                    }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -57,6 +65,15 @@
                         </li>
                         @endif
                         @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('publisher.assignees') }}">Profiles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('publisher.plans') }}">Plans</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('publisher.loans') }}">Loans</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -80,10 +97,14 @@
             </div>
         </nav>
 
-        <main class="py-4">
+        <main class="py-4 content">
             @yield('content')
         </main>
     </div>
 </body>
+<script>
+    const baseUrl = "{{ url('') }}";
+    feather.replace();
+</script>
 
 </html>

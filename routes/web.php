@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ApproverController;
+use App\Http\Controllers\AssignessController;
+use App\Http\Controllers\LoansController;
+use App\Http\Controllers\PlansController;
 use App\Http\Controllers\PublisherController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,10 +21,22 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('auth.login');
 });
+
 Auth::routes();
 
 Route::group(['middleware' => ['role:publisher']], function () {
     Route::get('/publisher', [PublisherController::class, 'index'])->name('publisher.index');
+
+    Route::get('/publisher/assignees', [AssignessController::class, 'index'])->name('publisher.assignees');
+    Route::post('/publisher/assignees', [AssignessController::class, 'store'])->name('publisher.assignees.store');
+    Route::put('/publisher/assignees/{id}', [AssignessController::class, 'update'])->name('publisher.assignees.update');
+
+    Route::get('/publisher/plans', [PlansController::class, 'index'])->name('publisher.plans');
+    Route::get('/publisher/get_plan_fee', [PlansController::class, 'getPlanFeeById']);
+
+    Route::get('/publisher/loans', [LoansController::class, 'index'])->name('publisher.loans');
+
+    Route::get('/publisher/generate', [PublisherController::class, 'generate'])->name('publisher.generate');
 });
 
 Route::group(['middleware' => ['role:approver']], function () {

@@ -28,7 +28,10 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected function authenticated(Request $request, $user)
+    {
+        return $user->hasRole('publisher') ? redirect('/publisher') : redirect('/approver');
+    }
 
     /**
      * Create a new controller instance.

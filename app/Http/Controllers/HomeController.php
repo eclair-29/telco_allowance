@@ -27,7 +27,7 @@ class HomeController extends Controller
         $user = auth()->user();
         // Role::create(['name' => 'publisher']);
         // Role::create(['name' => 'approver']);
-        // $user->assignRole('approver');
+        $user->assignRole('publisher');
         // return $user->hasRole('publisher');
 
         return view('home');

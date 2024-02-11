@@ -3,9 +3,9 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col">
             <div class="card">
-                <div class="card-header">{{ __('Publisher') }}</div>
+                <div class="card-header">{{ __('Manage Loans') }}</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -14,7 +14,7 @@
                     </div>
                     @endif
 
-                    {{ __('Publisher Index!') }}
+                    {{ __('Add/Update Loans!') }}
                 </div>
             </div>
         </div>

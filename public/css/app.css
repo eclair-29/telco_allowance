@@ -15,11 +15,11 @@
 }
 
 
-input, span, a, button, p, div, label {
-    font-size: 13px !important; 
+input, span, a, button, p, div, label, select, textarea {
+    font-size: 12px !important; 
 }
 
-input, select, a.btn {
+input, select, a.btn, textarea {
     outline: none !important;
     box-shadow: none !important;
 }
@@ -29,9 +29,9 @@ button {
 }
 
 table {
-  box-shadow: none !important;
-  border: none !important;
-  font-size: 11px;
+    box-shadow: none !important;
+    border: none !important;
+    font-size: 11px;
 }
 
 table thead th {
@@ -43,6 +43,10 @@ table thead th {
 table tfoot th {
     border-top: none !important;
     border-bottom: 1px solid #dee2e6 !important;
+}
+
+table tbody td a {
+    font-size: 12px !important;
 }
 
 table thead th,
@@ -111,4 +115,20 @@ tfoot th {
 .modal-title {
     font-size: 13px !important;
     font-weight: 600 !important;
+}
+
+.invalid-feedback {
+    font-size: 11px !important;
+}
+
+.feather {
+    width: 20px;
+    height: 20px;
+}
+
+.notes-cell {
+    max-width: 100px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

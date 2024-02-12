@@ -23,6 +23,13 @@ class AssignessController extends Controller
         $this->middleware('auth');
     }
 
+    public function getAssigneeInfoById(Request $request)
+    {
+        $assignee = Assignee::with('position')->where('id', $request->query('id'))->first();
+
+        return $assignee;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -75,7 +82,7 @@ class AssignessController extends Controller
         DB::beginTransaction();
 
         try {
-            $ticketId = createTicketId('asg');
+            $ticketId = createTicketId('asgn');
             $type = 'assignee';
             $userId = auth()->user()->id;
             $statusId = getRequestStatus('pending')->id;
@@ -99,14 +106,14 @@ class AssignessController extends Controller
 
             return [
                 'response' => 'success',
-                'alert' => 'Successfully sent Assignee Update request with ticket ID: ' . $ticketId . ' pending for approval.'
+                'alert' => 'Successfully sent Assignee Inclusion request with ticket ID: ' . $ticketId . ' pending for approval.'
             ];
         } catch (Throwable $th) {
             DB::rollBack();
 
             return [
                 'response' => 'error',
-                'alert' => 'Unable to update assignee. Please contact ISD for assistance.'
+                'alert' => 'Unable to add assignee. Please contact ISD for assistance.'
             ];
         }
 

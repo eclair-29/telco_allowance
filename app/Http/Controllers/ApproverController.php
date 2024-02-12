@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 
 class ApproverController extends Controller
@@ -18,7 +19,10 @@ class ApproverController extends Controller
      */
     public function index()
     {
-        return view('approver.index');
+        $tickets = Ticket::all();
+        return view('approver.index', [
+            'tickets' => $tickets
+        ]);
     }
 
     /**

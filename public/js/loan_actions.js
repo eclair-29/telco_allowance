@@ -1,28 +1,16 @@
-function getPlanFeeById(id, planFeeId) {
+function getAssigneeInfoById(id, code, position) {
     $.ajax({
         type: "GET",
-        url: `${baseUrl}/publisher/plans/get_plan_fee?id=${id}`,
+        url: `${baseUrl}/publisher/assignees/get_assignee?id=${id}`,
         success: function (response) {
-            planFeeId.val(response);
+            code.val(response.assignee_code);
+            position.val(response.position.description);
         },
         error: function (error) {
             console.log(error);
         },
     });
 }
-
-// Change value of plan_fee field when plan select is changed - for update action
-$("body").on("change", ".plan-select", function () {
-    getPlanFeeById(
-        $(this).val(),
-        $(`#plan_fee_${$(this).attr("id").replace("plan_", "")}`)
-    );
-});
-
-// Change value of plan_fee field when plan select is changed - for add action
-$("#add_assignee_plan").on("change", function () {
-    getPlanFeeById($(this).val(), $("#add_assignee_plan_fee"));
-});
 
 function associateErrors(errors, fields) {
     const getMessage = (fieldErrors, field) =>
@@ -38,14 +26,19 @@ function associateErrors(errors, fields) {
         });
 
     if (errors.assignee) getMessage(errors.assignee, fields.assignee);
-    if (errors.assignee_code)
-        getMessage(errors.assignee_code, fields.assignee_code);
-    if (errors.plan) getMessage(errors.plan, fields.plan);
-    if (errors.position) getMessage(errors.position, fields.position);
-
-    if (errors.account_no) getMessage(errors.account_no, fields.account_no);
-    if (errors.phone_no) getMessage(errors.phone_no, fields.phone_no);
-    if (errors.allowance) getMessage(errors.allowance, fields.allowance);
+    if (errors.current_subscription_count)
+        getMessage(
+            errors.current_subscription_count,
+            fields.current_subscription_count
+        );
+    if (errors.total_subscription_count)
+        getMessage(
+            errors.total_subscription_count,
+            fields.total_subscription_count
+        );
+    if (errors.subscription_fee)
+        getMessage(errors.subscription_fee, fields.subscription_fee);
+    if (errors.status) getMessage(errors.status, fields.status);
 }
 
 function clearErrorMsg(fields) {
@@ -67,22 +60,48 @@ function clearAlert(alert) {
     alert.attr("class", "alert").text("");
 }
 
+// Change value of assignee code and position field when assignee select is changed - for update action
+$("body").on("change", ".assignee-select", function () {
+    getAssigneeInfoById(
+        $(this).val(),
+        $(
+            `#loan_assignee_code_${$(this)
+                .attr("id")
+                .replace("loan_assignee_", "")}`
+        ),
+        $(
+            `#loan_assignee_position_${$(this)
+                .attr("id")
+                .replace("loan_assignee_", "")}`
+        )
+    );
+});
+
+// Change value of assignee code and position field when assignee select is changed - for add action
+$("#loan_assignee").on("change", function () {
+    getAssigneeInfoById(
+        $(this).val(),
+        $("#loan_assignee_code"),
+        $("#loan_assignee_position")
+    );
+});
+
 /* Validation process - Update action */
-$("body").on("submit", ".update-assignee", function (e) {
+$("body").on("submit", ".update-loan", function (e) {
     e.preventDefault();
 
     const action = $(this).attr("action");
-    const id = $(this).attr("id").replace("update_assignee_fields_", "");
+    const id = $(this).attr("id").replace("update_loan_fields_", "");
 
     const fields = {
-        account_no: $(`#account_no_${id}`),
-        phone_no: $(`#phone_no_${id}`),
-        allowance: $(`#allowance_${id}`),
+        current_subscription_count: $(`#current_subscription_count_${id}`),
+        total_subscription_count: $(`#total_subscription_count_${id}`),
+        subscription_fee: $(`#loan_subscription_fee_${id}`),
     };
 
     clearErrorMsg(fields);
 
-    const alert = $("#assignees").find(".alert");
+    const alert = $("#loans").find(".alert");
     const updateModal = bootstrap.Modal.getOrCreateInstance(
         `#${$(this).closest(".popup").attr("id")}`
     );
@@ -111,25 +130,23 @@ $("body").on("submit", ".update-assignee", function (e) {
 });
 
 /* Validation process - Add action */
-$("#add_assignee_fields").on("submit", function (e) {
+$("#add_loan_fields").on("submit", function (e) {
     e.preventDefault();
 
     const action = $(this).attr("action");
 
     const fields = {
-        assignee: $("#assignee"),
-        assignee_code: $("#assignee_code"),
-        account_no: $("#account_no"),
-        phone_no: $("#phone_no"),
-        allowance: $("#allowance"),
-        position: $("#position"),
-        plan: $("#add_assignee_plan"),
+        assignee: $("#loan_assignee"),
+        current_subscription_count: $("#current_subscription_count"),
+        total_subscription_count: $("#total_subscription_count"),
+        status: $("#loan_status"),
+        subscription_fee: $("#loan_subscription_fee"),
     };
 
     clearErrorMsg(fields);
 
-    const alert = $("#assignees").find(".alert");
-    const updateModal = bootstrap.Modal.getOrCreateInstance(
+    const alert = $("#loans").find(".alert");
+    const addModal = bootstrap.Modal.getOrCreateInstance(
         `#${$(this).closest(".popup").attr("id")}`
     );
 
@@ -145,8 +162,8 @@ $("#add_assignee_fields").on("submit", function (e) {
                 alert.attr("class", "alert alert-success").text(data.alert);
             else alert.attr("class", "alert alert-danger").text(data.alert);
 
-            updateModal.hide();
-            $("#add_assignee_fields").trigger("reset");
+            addModal.hide();
+            $("#add_loan_fields").trigger("reset");
         },
         error: function (error) {
             associateErrors(error.responseJSON.errors, fields);

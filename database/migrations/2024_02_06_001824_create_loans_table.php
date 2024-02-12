@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreign('status_id')->references('id')->on('statuses')->onDelete('cascade');
             $table->unsignedBigInteger('assignee_id');
             $table->foreign('assignee_id')->references('id')->on('assignees')->onDelete('cascade');
+            $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

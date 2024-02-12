@@ -9,6 +9,8 @@ class Excess extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function assignee()
     {
         return $this->belongsTo(Assignee::class);

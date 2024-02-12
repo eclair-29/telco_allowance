@@ -30,11 +30,14 @@ Route::group(['middleware' => ['role:publisher']], function () {
     Route::get('/publisher/assignees', [AssignessController::class, 'index'])->name('publisher.assignees');
     Route::post('/publisher/assignees', [AssignessController::class, 'store'])->name('publisher.assignees.store');
     Route::put('/publisher/assignees/{id}', [AssignessController::class, 'update'])->name('publisher.assignees.update');
+    Route::get('/publisher/assignees/get_assignee', [AssignessController::class, 'getAssigneeInfoById']);
 
     Route::get('/publisher/plans', [PlansController::class, 'index'])->name('publisher.plans');
-    Route::get('/publisher/get_plan_fee', [PlansController::class, 'getPlanFeeById']);
+    Route::get('/publisher/plans/get_plan_fee', [PlansController::class, 'getPlanFeeById']);
 
     Route::get('/publisher/loans', [LoansController::class, 'index'])->name('publisher.loans');
+    Route::post('/publisher/loans', [LoansController::class, 'store'])->name('publisher.loans.store');
+    Route::put('/publisher/loans/{id}', [LoansController::class, 'update'])->name('publisher.loans.update');
 
     Route::get('/publisher/generate', [PublisherController::class, 'generate'])->name('publisher.generate');
 });

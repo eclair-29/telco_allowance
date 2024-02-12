@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             PositionsSeeder::class,
             PlansSeeder::class,
             AssigneesSeeder::class,
-            ActionsSeeder::class
+            ActionsSeeder::class,
+            LoansSeeder::class
         ]);
     }
 }

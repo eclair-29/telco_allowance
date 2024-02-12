@@ -1,9 +1,18 @@
+const excessTableCols = [];
+
 let assignees_table = new DataTable("#assignees_table", {
     pageLength: 10,
 });
 
+let loans_table = new DataTable("#loans_table", {
+    pageLength: 10,
+});
+
 let plans_table = new DataTable("#plans_table");
-let excess_table = new DataTable("#excess_table");
+
+let excess_table = new DataTable("#excess_table", {
+    data: [],
+});
 
 function overrideTable(id) {
     const entries = $(`#${id}_table_length`);
@@ -18,4 +27,5 @@ function overrideTable(id) {
 
 overrideTable("assignees");
 overrideTable("plans");
+overrideTable("loans");
 overrideTable("excess");

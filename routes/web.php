@@ -40,6 +40,7 @@ Route::group(['middleware' => ['role:publisher']], function () {
     Route::put('/publisher/loans/{id}', [LoansController::class, 'update'])->name('publisher.loans.update');
 
     Route::get('/publisher/generate', [PublisherController::class, 'generate'])->name('publisher.generate');
+    Route::get('/publisher/get_excesses', [PublisherController::class, 'getExcessesBySeries']);
 });
 
 Route::group(['middleware' => ['role:approver']], function () {

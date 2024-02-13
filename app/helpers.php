@@ -60,3 +60,36 @@ function createTicketId($type)
     $ticketId = Str::upper($type) . '_' . $series . '_' . $zeroFilledId;
     return $ticketId;
 }
+
+function getExcessesBySeries($series)
+{
+    $query = DB::select(
+        "SELECT 
+            a.account_no,
+            a.phone_no,
+            a.assignee_code,
+            a.assignee,
+            pos.description as 'position',
+            a.allowance,
+            plan.subscription_fee as 'plan_fee',
+            e.excess_balance,
+            e.excess_balance_vat,
+            concat(l.current_subscription_count, ' / ' , l.total_subscription_count) as loan_progress,
+            if(l.status_id = (select id FROM statuses where description = 'finished'), null, l.subscription_fee) as 'loan_fee',
+            e.excess_charges,
+            e.excess_charges_vat,
+            e.non_vattable,
+            e.total_bill,
+            e.deduction,
+            e.notes
+        FROM excesses e 
+            LEFT JOIN assignees a ON e.assignee_id = a.id
+            LEFT JOIN positions pos ON a.position_id = pos.id
+            LEFT JOIN plans plan ON a.plan_id = plan.id
+            LEFT JOIN loans l ON a.id = l.assignee_id
+        WHERE e.series_id = ?;",
+        [$series->id]
+    );
+
+    return $query;
+}

@@ -23,6 +23,12 @@ class PublisherController extends Controller
         $this->middleware('auth');
     }
 
+    public function getExcessesBySeries(Request $request)
+    {
+        $excesses['data'] = getExcessesBySeries(Series::where('id', $request->series_id)->first());
+        return $excesses;
+    }
+
     public function generate()
     {
         DB::beginTransaction();
@@ -107,10 +113,7 @@ class PublisherController extends Controller
                     ]);
                 }
 
-                $excesses['data'] = Excess::where(
-                    'series_id',
-                    Series::where('description', $currentSeries)->first()->id
-                )->get();
+                $excesses = getExcessesBySeries(Series::where('description', $currentSeries)->first());
 
                 DB::commit();
 

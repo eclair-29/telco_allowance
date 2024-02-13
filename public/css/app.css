@@ -19,6 +19,19 @@ input, span, a, button, p, div, label, select, textarea {
     font-size: 12px !important; 
 }
 
+td[contenteditable="true"] {
+    color: black;
+    font-weight: 600 !important;
+    border: 1px solid #198754 !important;
+    border-top: none !important;
+}
+
+td[contenteditable="true"]:focus {
+    outline: none ;
+    background-color: #d1e7dd;
+    /* border: 1px solid blue !important; */
+ }
+
 input, select, a.btn, textarea {
     outline: none !important;
     box-shadow: none !important;
@@ -131,4 +144,24 @@ tfoot th {
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+#excess_table thead th:nth-child(8),
+#excess_table thead th:nth-child(12) {
+    border: 1px solid #198754 !important;
+}
+
+#excess_table tbody td:nth-child(7),
+#excess_table tbody td:nth-child(11) {
+    border-right: none !important;
+}
+
+#excess_table tbody td:nth-child(9),
+#excess_table tbody td:nth-child(13) {
+    border-left: none !important;
+}
+
+#excess_table tbody tr:last-child td:nth-child(8),
+#excess_table tbody tr:last-child td:nth-child(12) {
+    border-bottom: 1px solid #198754 !important;
 }

@@ -5,12 +5,12 @@
     <div class="row justify-content-center">
         <div class="col">
             <div class="card">
-                <div class="card-header">{{ __('Telco Allowance Journal') }}</div>
+                <div class="card-header">{{ __('Telco Allowance') }}</div>
 
                 <div class="card-body">
                     <x-alert />
 
-                    <div class="pb-3 d-flex justify-content-end">
+                    <div class="pb-3 d-flex">
                         <select class="border-dark form-select w-auto" id="series_select">
                             <option selected disabled>Select Series</option>
 
@@ -38,6 +38,11 @@
                         </div>
                     </div>
 
+                    <div class="pb-3">
+                        <span class="fw-bold" id="series_header"></span>
+                        <span class="fw-bold d-block" id="status_header"></span>
+                    </div>
+
                     <x-table :id="'excess_table'">
                         <thead>
                             <tr>
@@ -61,7 +66,6 @@
                             </tr>
                         </thead>
                         <tbody>
-
                         </tbody>
                     </x-table>
                 </div>

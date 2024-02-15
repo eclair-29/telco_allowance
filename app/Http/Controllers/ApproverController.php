@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Series;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
@@ -19,9 +20,21 @@ class ApproverController extends Controller
      */
     public function index()
     {
-        $tickets = Ticket::all();
+        $tickets = Ticket::with('status', 'user')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $series = null;
+
+        foreach ($tickets as $ticket) {
+            if ($ticket->type == 'excess') {
+                $series = Series::where('id', $ticket->request_details[0]['series_id'])->first();
+            }
+        }
+
         return view('approver.index', [
-            'tickets' => $tickets
+            'tickets' => $tickets,
+            'series' => $series
         ]);
     }
 

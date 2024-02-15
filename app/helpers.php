@@ -3,8 +3,9 @@
 use Carbon\Carbon;
 use App\Models\Plan;
 use App\Models\Status;
-use App\Models\Position;
 use App\Models\Ticket;
+use App\Models\Assignee;
+use App\Models\Position;
 use App\Models\Tracking;
 use Illuminate\Support\Str;
 
@@ -61,6 +62,20 @@ function createTicketId($type)
     return $ticketId;
 }
 
+function getTicketsByType($type)
+{
+    $tickets = Ticket::with('status', 'user')
+        ->where('type', $type)->get();
+
+    return $tickets;
+}
+
+function getCurrentSeries()
+{
+    $currentSeries = Carbon::now()->format('M') . ' ' . Carbon::now()->format('Y');
+    return $currentSeries;
+}
+
 function getExcessesBySeries($series)
 {
     $query = DB::select(
@@ -81,12 +96,16 @@ function getExcessesBySeries($series)
             e.non_vattable,
             e.total_bill,
             e.deduction,
-            e.notes
+            e.notes,
+            s.description as 'status',
+            e.series_id,
+            e.assignee_excess_id
         FROM excesses e 
             LEFT JOIN assignees a ON e.assignee_id = a.id
             LEFT JOIN positions pos ON a.position_id = pos.id
             LEFT JOIN plans plan ON a.plan_id = plan.id
             LEFT JOIN loans l ON a.id = l.assignee_id
+            LEFT JOIN statuses s ON e.status_id = s.id
         WHERE e.series_id = ?;",
         [$series->id]
     );

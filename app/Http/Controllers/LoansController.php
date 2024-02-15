@@ -70,6 +70,7 @@ class LoansController extends Controller
         $validated = $request->validated();
 
         $validated['notes'] = $request->notes;
+        $validated['assignee_full'] = Assignee::where('id', $request->assignee)->first()->assignee;
 
         DB::beginTransaction();
 
@@ -142,6 +143,8 @@ class LoansController extends Controller
         $validated['notes'] = $request->notes;
         $validated['assignee'] = $request->assignee;
         $validated['status'] = $request->status;
+
+        $validated['assignee_full'] = Assignee::where('id', $request->assignee)->first()->assignee;
 
         DB::beginTransaction();
 

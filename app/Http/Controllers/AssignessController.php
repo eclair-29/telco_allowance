@@ -48,10 +48,13 @@ class AssignessController extends Controller
 
         $plans = Plan::all();
 
+        $tickets = getTicketsByType('assignee');
+
         return view('publisher.assignees', [
             'assignees' => $assignees,
             'positions' => $positions,
-            'plans' => $plans
+            'plans' => $plans,
+            'tickets' => $tickets
         ]);
     }
 
@@ -78,6 +81,10 @@ class AssignessController extends Controller
         $validated['assignee'] = Str::upper($request->assignee);
         $validated['SIM_only'] = $request->SIM_only;
         $validated['notes'] = $request->notes;
+        $validated['plan_fee'] = $request->plan_fee;
+
+        $validated['position_desc'] = Position::where('id', $request->position)->first()->description;
+        $validated['plan_desc'] = Plan::where('id', $request->plan)->first()->description;
 
         DB::beginTransaction();
 
@@ -156,14 +163,18 @@ class AssignessController extends Controller
         $validated['assignee'] = Str::upper($request->assignee);
         $validated['assignee_code'] = $request->assignee_code;
         $validated['plan'] = $request->plan;
+        $validated['plan_fee'] = $request->plan_fee;
         $validated['SIM_only'] = $request->SIM_only;
         $validated['position'] = $request->position;
         $validated['notes'] = $request->notes;
 
+        $validated['position_desc'] = Position::where('id', $request->position)->first()->description;
+        $validated['plan_desc'] = Plan::where('id', $request->plan)->first()->description;
+
         DB::beginTransaction();
 
         try {
-            $ticketId = createTicketId('asg');
+            $ticketId = createTicketId('asgn');
             $type = 'assignee';
             $userId = auth()->user()->id;
             $statusId = getRequestStatus('pending')->id;

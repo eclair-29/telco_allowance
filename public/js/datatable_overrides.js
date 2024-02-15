@@ -103,7 +103,7 @@ function editExcessCell() {
                     original = e.target.textContent;
                 });
 
-                $(cell).on("blur", function (e) {
+                const handleCellEvent = (e) => {
                     if (original !== e.target.textContent) {
                         const row = excess_table.row($(e.target).parent());
 
@@ -128,6 +128,12 @@ function editExcessCell() {
                                 row.data().non_vattable
                         );
 
+                        const deduction = parseFloatFixed(
+                            row.data().loan_fee +
+                                excess_charges_vat +
+                                excess_charges
+                        );
+
                         excess_table
                             .row($(e.target).parent())
                             .data({
@@ -135,6 +141,7 @@ function editExcessCell() {
                                 excess_charges,
                                 excess_charges_vat,
                                 total_bill,
+                                deduction,
                             })
                             .draw(false);
 
@@ -143,12 +150,55 @@ function editExcessCell() {
                             excess_balance: parseFloat(e.target.textContent),
                         });
                     }
+                };
+
+                $(cell).on("blur", function (e) {
+                    handleCellEvent(e);
+                });
+
+                $(cell).on("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        handleCellEvent(e);
+                    }
                 });
             },
             targets: 11,
         },
+        {
+            createdCell: function (cell) {
+                let original;
+
+                cellAtrribute(cell);
+
+                cell.addEventListener("focus", function (e) {
+                    original = e.target.textContent;
+                });
+
+                $(cell).on("blur", function (e) {
+                    if (original !== e.target.textContent) {
+                        const row = excess_table.row($(e.target).parent());
+
+                        excess_table
+                            .row($(e.target).parent())
+                            .data({
+                                ...row.data(),
+                                notes: e.target.textContent,
+                            })
+                            .draw(false);
+                    }
+                });
+            },
+            targets: 16,
+        },
     ];
 }
+
+let tickets_table = new DataTable("#tickets_table", {
+    order: [
+        [3, "asc"],
+        [5, "desc"],
+    ],
+});
 
 let assignees_table = new DataTable("#assignees_table", {
     pageLength: 10,
@@ -170,14 +220,18 @@ function overrideTable(id) {
     const entries = $(`#${id}_table_length`);
     const search = $(`#${id}_table_filter`);
     const top_controls =
-        "<div class='table-top-controls d-flex align-items-center justify-content-between'></div>";
+        "<div class='table-top-controls d-flex align-items-center justify-content-between' id='" +
+        id +
+        "_table_top_controls'></div>";
 
     $(`#${id}_table`).wrap("<div class='table-responsive'></div>");
+
     entries.wrap(top_controls);
-    search.detach().appendTo(".table-top-controls");
+    search.detach().appendTo("#" + id + "_table_top_controls");
 }
 
 overrideTable("assignees");
 overrideTable("plans");
 overrideTable("loans");
 overrideTable("excess");
+overrideTable("tickets");

@@ -82,7 +82,7 @@
 </div>
 
 <x-popup :id="'requests_popup'" :title="'Requests'" :size="'xl'" :dnone="true" :button="''" :post="''">
-    <div>Request table</div>
+    <x-tickets-table :tickets="$tickets" />
 </x-popup>
 
 <x-popup :id="'add_assignee_popup'" :title="'Add Assignee'" :size="'lg'" :button="'Save'" :dnone="false"

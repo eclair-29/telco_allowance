@@ -59,7 +59,7 @@ table tfoot th {
 }
 
 table tbody td a {
-    font-size: 12px !important;
+    font-size: 11px !important;
 }
 
 table thead th,
@@ -85,7 +85,7 @@ table tbody tr:last-child td {
 }
 
 table thead th:last-child,
-table tbody td:last-child,
+table tbody td:last-child:not(#excess_table tbody td:nth-child(17)),
 table tfoot th:last-child {
   border-right: 1px solid #dee2e6 !important;
 }
@@ -139,20 +139,31 @@ tfoot th {
     height: 20px;
 }
 
+.ticket-cell,
 .notes-cell {
-    max-width: 100px;
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+.notes-cell {
+    max-width: 100px;
+}
+
+.ticket-cell {
+    max-width: 70px;
+}
+
+
 #excess_table thead th:nth-child(8),
-#excess_table thead th:nth-child(12) {
+#excess_table thead th:nth-child(12),
+#excess_table thead th:nth-child(17) {
     border: 1px solid #198754 !important;
 }
 
 #excess_table tbody td:nth-child(7),
-#excess_table tbody td:nth-child(11) {
+#excess_table tbody td:nth-child(11),
+#excess_table tbody td:nth-child(16) {
     border-right: none !important;
 }
 
@@ -161,7 +172,25 @@ tfoot th {
     border-left: none !important;
 }
 
+#excess_table tbody td:nth-child(17) {
+    border-left: 1px solid #198754 !important;
+}
+
 #excess_table tbody tr:last-child td:nth-child(8),
-#excess_table tbody tr:last-child td:nth-child(12) {
+#excess_table tbody tr:last-child td:nth-child(12),
+#excess_table tbody tr:last-child td:nth-child(17) {
     border-bottom: 1px solid #198754 !important;
+}
+
+#excess_ticket_series_header,
+#series_header {
+    font-size: 14px !important;
+}
+
+#status_header {
+    font-size: 11px !important;
+}
+
+#status_header span {
+    text-transform: capitalize;
 }

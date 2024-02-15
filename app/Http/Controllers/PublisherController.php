@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Throwable;
 use Carbon\Carbon;
+use App\Models\Loan;
 use App\Models\Plan;
 use App\Models\Action;
 use App\Models\Excess;
 use App\Models\Series;
 use App\Models\Status;
+use App\Models\Ticket;
 use App\Models\Assignee;
-use App\Models\Loan;
 use App\Models\Position;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -29,11 +30,140 @@ class PublisherController extends Controller
         return $excesses;
     }
 
+    public function publish(Request $request)
+    {
+        DB::beginTransaction();
+
+        $excesses = (array) json_decode($request->excesses, true);
+
+        $excessForApprovalStatus = Status::where('description', 'for approval')
+            ->where('category', 'excess')
+            ->first();
+
+        $excessSeries = Series::where('description', getCurrentSeries())->first();
+
+        $excessesRef = $excesses[0];
+
+        // if (
+        //     $excessesRef['series_id'] == $excessSeries->id
+        //     && $excessesRef['status'] == 'for approval'
+        // ) {
+        //     return [
+        //         'response' => 'error',
+        //         'alert' => 'Already sent a ticket approval request for this series',
+        //     ];
+        // }
+
+        if (
+            $excessesRef['series_id'] == $excessSeries->id
+            && $excessesRef['status'] == 'published'
+        ) {
+            return [
+                'response' => 'error',
+                'alert' => 'This series has already been published',
+            ];
+        }
+
+        try {
+            $ticketId = createTicketId('excs');
+            $type = 'excess';
+            $userId = auth()->user()->id;
+            $statusId = getRequestStatus('pending')->id;
+            $requestDetails = collect($excesses);
+
+            foreach ($excesses as $excess) {
+                if (isset($excess['assignee_excess_id'])) {
+                    Excess::where('assignee_excess_id', $excess['assignee_excess_id'])
+                        ->first()
+                        ->update([
+                            'status_id' => $excessForApprovalStatus->id,
+                        ]);
+                }
+            }
+
+            Ticket::create([
+                'ticket_id' => $ticketId,
+                'type' => $type,
+                'user_id' => $userId,
+                'request_details' => $requestDetails,
+                'status_id' => $statusId,
+            ]);
+
+            $action = Action::select('id')
+                ->where('description', 'publish worksheet')
+                ->first();
+
+            createActionLog(auth()->user(), $action, 'Excess publish request with ticket ID: ' . $ticketId . ' is pending for approval');
+
+            DB::commit();
+
+            return [
+                'response' => 'success',
+                'alert' => 'Successfully sent Excess Publish request with ticket ID: ' . $ticketId . ' pending for approval.'
+            ];
+        } catch (Throwable $th) {
+            DB::rollBack();
+
+            return [
+                'response' => 'error',
+                'alert' => 'Unable to publish excess. Please contact ISD for assistance.' . $th
+            ];
+        }
+    }
+
+    public function save(Request $request)
+    {
+        DB::beginTransaction();
+
+        $currentSeries = getCurrentSeries();
+        $excesses = (array) json_decode($request->excesses, true);
+        try {
+            foreach ($excesses as $excess) {
+                if (isset($excess['assignee_excess_id'])) {
+                    Excess::where('assignee_excess_id', $excess['assignee_excess_id'])
+                        ->first()
+                        ->update([
+                            'deduction' => $excess['deduction'],
+                            'excess_balance_vat' => $excess['excess_balance_vat'],
+                            'excess_charges_vat' => $excess['excess_charges_vat'],
+                            'total_bill' => $excess['total_bill'],
+                            'excess_balance' => $excess['excess_balance'],
+                            'excess_charges' => $excess['excess_charges'],
+                            'non_vattable' => $excess['non_vattable'],
+                            'notes' => $excess['notes'],
+                        ]);
+                }
+            }
+
+            $user = auth()->user();
+            $action = Action::select('id')
+                ->where('description', 'draft worksheet')
+                ->first();
+
+            createActionLog($user, $action, 'Saved ' . $currentSeries . ' Monthly Worksheet');
+
+            DB::commit();
+
+            return [
+                'response' => 'success',
+                'alert' => $currentSeries . ' worksheet saved successfully.',
+                // 'data' => $excesses
+            ];
+        } catch (Throwable $th) {
+            DB::rollBack();
+
+            return [
+                'response' => 'error',
+                'alert' => 'Error on saving worksheet. Please contact ISD for support.' . $th
+            ];
+        }
+    }
+
     public function generate()
     {
         DB::beginTransaction();
         try {
-            $currentSeries = Carbon::now()->format('M') . ' ' . Carbon::now()->format('Y');
+            $currentSeries = getCurrentSeries();
             $series = Series::where('description', $currentSeries)->first();
 
             if (!$series) {

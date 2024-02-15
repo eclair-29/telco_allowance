@@ -9,7 +9,7 @@
 
                 <div class="card-body">
                     <x-alert />
-
+                    <x-tickets-table :tickets="$tickets" :series="$series" />
                 </div>
             </div>
         </div>

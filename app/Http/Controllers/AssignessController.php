@@ -54,7 +54,7 @@ class AssignessController extends Controller
             'assignees' => $assignees,
             'positions' => $positions,
             'plans' => $plans,
-            'tickets' => $tickets
+            'tickets' => $tickets,
         ]);
     }
 
@@ -95,17 +95,19 @@ class AssignessController extends Controller
             $statusId = getRequestStatus('pending')->id;
             $requestDetails = collect($validated);
 
+            $action = Action::select('id')
+                ->where('description', 'add profile')
+                ->first();
+
             Ticket::create([
                 'ticket_id' => $ticketId,
                 'type' => $type,
                 'user_id' => $userId,
                 'request_details' => $requestDetails,
                 'status_id' => $statusId,
+                'notes' => $request->notes,
+                'action_id' => $action->id
             ]);
-
-            $action = Action::select('id')
-                ->where('description', 'add profile')
-                ->first();
 
             createActionLog(auth()->user(), $action, 'Assignee inclusion request with ticket ID: ' . $ticketId . ' pending for approval');
 
@@ -123,8 +125,6 @@ class AssignessController extends Controller
                 'alert' => 'Unable to add assignee. Please contact ISD for assistance.'
             ];
         }
-
-        return $validated;
     }
 
     /**
@@ -180,17 +180,19 @@ class AssignessController extends Controller
             $statusId = getRequestStatus('pending')->id;
             $requestDetails = collect($validated);
 
+            $action = Action::select('id')
+                ->where('description', 'update profile')
+                ->first();
+
             Ticket::create([
                 'ticket_id' => $ticketId,
                 'type' => $type,
                 'user_id' => $userId,
                 'request_details' => $requestDetails,
                 'status_id' => $statusId,
+                'notes' => $request->notes,
+                'action_id' => $action->id
             ]);
-
-            $action = Action::select('id')
-                ->where('description', 'update profile')
-                ->first();
 
             createActionLog(auth()->user(), $action, 'Assignee update request for ' . $request->assignee . ' with ticket ID: ' . $ticketId . ' pending for approval');
 

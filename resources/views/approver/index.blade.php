@@ -15,4 +15,10 @@
         </div>
     </div>
 </div>
+
+@foreach($tickets as $ticket)
+<x-tickets-popup :tickets="$tickets" :series="$series" />
+@endforeach
+
+<script src="{{ asset('js/approval.js') }}"></script>
 @endsection

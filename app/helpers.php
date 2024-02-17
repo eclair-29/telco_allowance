@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use App\Models\Plan;
+use App\Models\Series;
 use App\Models\Status;
 use App\Models\Ticket;
 use App\Models\Assignee;
@@ -64,8 +65,10 @@ function createTicketId($type)
 
 function getTicketsByType($type)
 {
-    $tickets = Ticket::with('status', 'user')
-        ->where('type', $type)->get();
+    $tickets = Ticket::with('status', 'user', 'action')
+        ->where('type', $type)
+        ->where('status_id', getRequestStatus('pending')->id)
+        ->get();
 
     return $tickets;
 }
@@ -111,4 +114,14 @@ function getExcessesBySeries($series)
     );
 
     return $query;
+}
+
+function updateTicketByApprover($ticket, $props)
+{
+    $ticket->update([
+        'status_id'     => $props['status']->id,
+        'notes'         => $props['notes'],
+        'checked_by'    => $props['user']->name,
+        'action_id'     => $props['action']->id
+    ]);
 }

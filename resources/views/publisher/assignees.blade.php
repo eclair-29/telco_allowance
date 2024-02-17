@@ -13,7 +13,7 @@
                     <div class="pb-3 d-flex justify-content-end">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                                data-bs-target="#requests_popup">Requests</button>
+                                data-bs-target="#assignee_requests_popup">Requests</button>
                             <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                 data-bs-target="#add_assignee_popup">
                                 <!-- <i data-feather="plus"></i> -->
@@ -81,14 +81,19 @@
     </div>
 </div>
 
-<x-popup :id="'requests_popup'" :title="'Requests'" :size="'xl'" :dnone="true" :button="''" :post="''">
-    <x-tickets-table :tickets="$tickets" />
-</x-popup>
-
 <x-popup :id="'add_assignee_popup'" :title="'Add Assignee'" :size="'lg'" :button="'Save'" :dnone="false"
     :post="'add_assignee_fields'">
     @include('publisher.partials.add-assignee')
 </x-popup>
+
+<x-popup :id="'assignee_requests_popup'" :title="'Assignee Requests'" :size="'xl'" :dnone="true" :button="''"
+    :post="''">
+    <x-tickets-table :tickets="$tickets" />
+</x-popup>
+
+@foreach($tickets as $ticket)
+<x-tickets-popup :tickets="$tickets" :series="null" />
+@endforeach
 
 <script src="{{ asset('js/datatable_overrides.js') }}"></script>
 <script src="{{ asset('js/assignee_actions.js') }}"></script>

@@ -6,16 +6,16 @@ function setControlBtnStatus(status) {
 
 function generateWorksheet() {
     $.ajax({
-        type: "GET",
+        type: "get",
         url: `${baseUrl}/publisher/generate`,
         success: function (response) {
             if (response.data) {
                 excess_table.clear().draw();
                 excess_table.rows.add(response.data).draw();
+                setControlBtnStatus(false);
             } else {
                 alert(response.alert);
             }
-            console.log(response);
         },
         error: function (error) {
             console.log(error);
@@ -26,7 +26,7 @@ function generateWorksheet() {
 
 function getExcessesBySeries(series_id) {
     $.ajax({
-        type: "GET",
+        type: "get",
         url: `${baseUrl}/publisher/get_excesses?series_id=${series_id}`,
         success: function (response) {
             excess_table.clear().draw();
@@ -55,14 +55,15 @@ function getExcessesBySeries(series_id) {
     });
 }
 
-function getWorksheetAction(action) {
+function getWorksheetAction(action, notes) {
     const tableRows = excess_table.rows().data().toArray();
 
     $.ajax({
-        type: "POST",
+        type: "post",
         url: `${baseUrl}/publisher/${action}`,
         data: {
             excesses: JSON.stringify(tableRows),
+            notes,
         },
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -93,9 +94,13 @@ $("#series_select").on("change", function () {
 });
 
 $("#save_worksheet").on("click", function () {
-    getWorksheetAction("save");
+    getWorksheetAction("save", "");
 });
 
 $("#publish_worksheet").on("click", function () {
-    getWorksheetAction("publish");
+    const notes = prompt("Add notes:", "Request for approval");
+
+    if (notes) {
+        getWorksheetAction("publish", notes);
+    }
 });

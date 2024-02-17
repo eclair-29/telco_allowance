@@ -34,6 +34,8 @@ class StatusesSeeder extends Seeder
             // consolidated excess billing status
             ['category' => 'excess', 'description' => 'draft', 'created_at' => $date],
             ['category' => 'excess', 'description' => 'published', 'created_at' => $date],
+            ['category' => 'excess', 'description' => 'for approval', 'created_at' => $date],
+            ['category' => 'excess', 'description' => 'rejected', 'created_at' => $date],
 
             // requests status
             ['category' => 'request', 'description' => 'pending',  'created_at' => $date],

@@ -39,6 +39,7 @@ class ActionsSeeder extends Seeder
             ['resource' => 'approver', 'description' => 'approve add loan', 'created_at' => $date],
             ['resource' => 'approver', 'description' => 'approve update loan', 'created_at' => $date],
             ['resource' => 'approver', 'description' => 'approve cancel loan', 'created_at' => $date],
+            ['resource' => 'approver', 'description' => 'reject request', 'created_at' => $date],
         ];
 
         foreach ($actions as $action) {

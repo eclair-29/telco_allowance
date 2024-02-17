@@ -155,7 +155,6 @@ tfoot th {
 }
 
 
-#excess_table thead th:nth-child(8),
 #excess_table thead th:nth-child(12),
 #excess_table thead th:nth-child(17) {
     border: 1px solid #198754 !important;
@@ -167,7 +166,6 @@ tfoot th {
     border-right: none !important;
 }
 
-#excess_table tbody td:nth-child(9),
 #excess_table tbody td:nth-child(13) {
     border-left: none !important;
 }
@@ -176,7 +174,6 @@ tfoot th {
     border-left: 1px solid #198754 !important;
 }
 
-#excess_table tbody tr:last-child td:nth-child(8),
 #excess_table tbody tr:last-child td:nth-child(12),
 #excess_table tbody tr:last-child td:nth-child(17) {
     border-bottom: 1px solid #198754 !important;
@@ -184,7 +181,7 @@ tfoot th {
 
 #excess_ticket_series_header,
 #series_header {
-    font-size: 14px !important;
+    font-size: 12px !important;
 }
 
 #status_header {
@@ -193,4 +190,5 @@ tfoot th {
 
 #status_header span {
     text-transform: capitalize;
+    font-size: 11px !important;
 }

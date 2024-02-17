@@ -82,6 +82,14 @@
     @include('publisher.partials.add-loan')
 </x-popup>
 
+<x-popup :id="'loan_requests_popup'" :title="'Loan Requests'" :size="'xl'" :dnone="true" :button="''" :post="''">
+    <x-tickets-table :tickets="$tickets" />
+</x-popup>
+
+@foreach($tickets as $ticket)
+<x-tickets-popup :tickets="$tickets" :series="null" />
+@endforeach
+
 <script src="{{ asset('js/datatable_overrides.js') }}"></script>
 <script src="{{ asset('js/loan_actions.js') }}"></script>
 @endsection

@@ -24,4 +24,9 @@ class Ticket extends Model
     {
         return $this->belongsTo(Status::class);
     }
+
+    public function action()
+    {
+        return $this->belongsTo(Action::class);
+    }
 }

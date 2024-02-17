@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('ticket_id')->unique();
             $table->string('type');
+            $table->unsignedBigInteger('action_id')->nullable();
+            $table->foreign('action_id')->references('id')->on('actions')->onDelete('cascade');
             $table->json('request_details');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

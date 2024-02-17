@@ -13,4 +13,9 @@ class Action extends Model
     {
         return $this->hasMany(Tracking::class);
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

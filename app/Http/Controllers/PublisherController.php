@@ -44,15 +44,15 @@ class PublisherController extends Controller
 
         $excessesRef = $excesses[0];
 
-        // if (
-        //     $excessesRef['series_id'] == $excessSeries->id
-        //     && $excessesRef['status'] == 'for approval'
-        // ) {
-        //     return [
-        //         'response' => 'error',
-        //         'alert' => 'Already sent a ticket approval request for this series',
-        //     ];
-        // }
+        if (
+            $excessesRef['series_id'] == $excessSeries->id
+            && $excessesRef['status'] == 'for approval'
+        ) {
+            return [
+                'response' => 'error',
+                'alert' => 'Already sent a ticket approval request for this series',
+            ];
+        }
 
         if (
             $excessesRef['series_id'] == $excessSeries->id
@@ -71,6 +71,10 @@ class PublisherController extends Controller
             $statusId = getRequestStatus('pending')->id;
             $requestDetails = collect($excesses);
 
+            $action = Action::select('id')
+                ->where('description', 'publish worksheet')
+                ->first();
+
             foreach ($excesses as $excess) {
                 if (isset($excess['assignee_excess_id'])) {
                     Excess::where('assignee_excess_id', $excess['assignee_excess_id'])
@@ -87,6 +91,8 @@ class PublisherController extends Controller
                 'user_id' => $userId,
                 'request_details' => $requestDetails,
                 'status_id' => $statusId,
+                'notes' => $request->notes,
+                'action_id' => $action->id
             ]);
 
             $action = Action::select('id')

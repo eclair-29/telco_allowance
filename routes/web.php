@@ -47,6 +47,7 @@ Route::group(['middleware' => ['role:publisher']], function () {
 
 Route::group(['middleware' => ['role:approver']], function () {
     Route::get('/approver', [ApproverController::class, 'index'])->name('approver.index');
+    Route::put('/approver/{id}', [ApproverController::class, 'update'])->name('approver.update');
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

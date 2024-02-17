@@ -41,11 +41,14 @@ class LoansController extends Controller
 
         $statuses = Status::where('category', 'loan')->get();
 
+        $tickets = getTicketsByType('loan');
+
         return view('publisher.loans', [
             'loans' => $loans,
             'assignees' => $assignees,
             'positions' => $positions,
-            'statuses' => $statuses
+            'statuses' => $statuses,
+            'tickets' => $tickets,
         ]);
     }
 
@@ -71,6 +74,11 @@ class LoansController extends Controller
 
         $validated['notes'] = $request->notes;
         $validated['assignee_full'] = Assignee::where('id', $request->assignee)->first()->assignee;
+        $validated['status_desc'] = Status::where('id', $request->status)->first()->description;
+
+        $action = Action::select('id')
+            ->where('description', 'add loan')
+            ->first();
 
         DB::beginTransaction();
 
@@ -83,6 +91,8 @@ class LoansController extends Controller
                 'user_id' => auth()->user()->id,
                 'request_details' => collect($validated),
                 'status_id' => getRequestStatus('pending')->id,
+                'notes' => $request->notes,
+                'action_id' => $action->id
             ]);
 
             $action = Action::select('id')
@@ -145,6 +155,11 @@ class LoansController extends Controller
         $validated['status'] = $request->status;
 
         $validated['assignee_full'] = Assignee::where('id', $request->assignee)->first()->assignee;
+        $validated['status_desc'] = Status::where('id', $request->status)->first()->description;
+
+        $action = Action::select('id')
+            ->where('description', 'update loan')
+            ->first();
 
         DB::beginTransaction();
 
@@ -157,6 +172,8 @@ class LoansController extends Controller
                 'user_id' => auth()->user()->id,
                 'request_details' => collect($validated),
                 'status_id' => getRequestStatus('pending')->id,
+                'notes' => $request->notes,
+                'action_id' => $action->id
             ]);
 
             $action = Action::select('id')

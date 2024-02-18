@@ -92,7 +92,11 @@ function getExcessesBySeries($series)
             plan.subscription_fee as 'plan_fee',
             e.excess_balance,
             e.excess_balance_vat,
-            concat(l.current_subscription_count, ' / ' , l.total_subscription_count) as loan_progress,
+            if(
+                l.status_id = (select id FROM statuses where description = 'finished'), 
+                    null, 
+                    concat(l.current_subscription_count, ' / ' , l.total_subscription_count)
+            ) as loan_progress,
             if(l.status_id = (select id FROM statuses where description = 'finished'), null, l.subscription_fee) as 'loan_fee',
             e.excess_charges,
             e.excess_charges_vat,

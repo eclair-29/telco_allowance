@@ -53,7 +53,7 @@
                                 <th class="text-center">Position</th>
                                 <th class="text-center">Allowance</th>
                                 <th class="text-center">Plan Fee</th>
-                                <th class="text-center">Excess Allowance</th>
+                                <th class="text-center">Excess Usage</th>
                                 <th class="text-center">VAT</th>
                                 <th class="text-center">Loan Progress</th>
                                 <th class="text-center">Loan Monthly Fee</th>

@@ -105,6 +105,13 @@
                     value="{{ $ticket->request_details['plan_fee'] }}" readonly>
             </div>
         </div>
+        <div class="col-lg-4 pb-3">
+            <label for="SIM_only" class="form-label">
+                SIM only
+            </label>
+            <input type="text" class="form-control" name="SIM_only"
+                value="{{ $ticket->request_details['SIM_only'] == 'on' ? 'Yes' : 'No' }}" readonly>
+        </div>
         <div class="col-12 pb-3">
             <label for="assignee_notes" class="form-label">Notes</label>
             <textarea readonly class="form-control" name="assignee_notes"
@@ -175,7 +182,7 @@
             <th class="text-center">Position</th>
             <th class="text-center">Allowance</th>
             <th class="text-center">Plan Fee</th>
-            <th class="text-center">Excess Allowance</th>
+            <th class="text-center">Excess Usage</th>
             <th class="text-center">VAT</th>
             <th class="text-center">Loan Progress</th>
             <th class="text-center">Loan Monthly Fee</th>

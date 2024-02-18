@@ -43,6 +43,10 @@ function editExcessCell() {
                     if (original !== e.target.textContent) {
                         const row = excess_table.row($(e.target).parent());
 
+                        const excess_balance = parseFloat(
+                            row.data().allowance - row.data().plan_fee
+                        );
+
                         const excess_charges = e.target.textContent
                             ? parseFloatFixed(
                                   e.target.textContent -

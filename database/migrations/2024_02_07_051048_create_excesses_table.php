@@ -20,6 +20,7 @@ return new class extends Migration
             $table->float('excess_charges', 8, 2)->nullable();
             $table->float('excess_charges_vat', 8, 2)->nullable();
             $table->float('non_vattable', 8, 2)->nullable();
+            $table->float('pro_rated_bill', 8, 2)->nullable();
             $table->float('total_bill', 8, 2);
             $table->float('deduction', 8, 2)->nullable();
             $table->unsignedBigInteger('series_id');

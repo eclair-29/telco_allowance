@@ -63,7 +63,7 @@ function getWorksheetAction(action, notes) {
         url: `${baseUrl}/publisher/${action}`,
         data: {
             excesses: JSON.stringify(tableRows),
-            notes,
+            // notes,
         },
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),

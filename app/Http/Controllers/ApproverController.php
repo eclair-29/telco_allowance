@@ -183,7 +183,8 @@ class ApproverController extends Controller
                             'phone_no'      => $request->phone_no,
                             'allowance'     => $request->allowance,
                             'plan_id'       => $request->plan,
-                            'notes'         => $request->assignee_notes
+                            'notes'         => $request->assignee_notes,
+                            'SIM_only'      => $request->SIM_only == 'Yes' ? 1 : 0
                         ]
                     );
 
@@ -210,6 +211,15 @@ class ApproverController extends Controller
                 $ticketProps['status'] = $status;
 
                 updateTicketByApprover($ticket, $ticketProps);
+
+                if ($ticket->type == 'excess') {
+                    $excesses = Excess::where('series_id', $ticket->request_details[0]['series_id']);
+                    $excesses->update([
+                        'status_id' => Status::where('category', 'excess')->where('description', 'rejected')->first()->id
+                    ]);
+                }
+
+                createActionLog(auth()->user(), $action, 'Rejected ticket ID: ' . $ticket->ticket_id . ' by ' . $user->name . ' due to  ' . $request->rejected_notes);
 
                 DB::commit();
 

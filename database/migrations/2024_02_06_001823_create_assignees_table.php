@@ -28,9 +28,9 @@ return new class extends Migration
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->string('notes')->nullable();
             $table->boolean('SIM_only')->nullable();
-            $table->string('data_allocation');
-            $table->date('contract_validity_date');
-            $table->integer('contract_days_left');
+            $table->string('data_allocation')->nullable();
+            $table->date('contract_validity_date')->nullable();
+            $table->integer('contract_days_left')->nullable();
             $table->timestamps();
         });
     }

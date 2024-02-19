@@ -172,6 +172,8 @@
 </form>
 
 @if ($ticket->type == 'excess')
+<x-total :view="'approver_'" :excesses="$ticket->request_details" />
+
 <x-table :id="'excess_ticket_' . $ticket->id . '_table'">
     <thead>
         <tr>
@@ -182,6 +184,7 @@
             <th class="text-center">Position</th>
             <th class="text-center">Allowance</th>
             <th class="text-center">Plan Fee</th>
+            <th class="text-center">Prorated Bill</th>
             <th class="text-center">Excess Usage</th>
             <th class="text-center">VAT</th>
             <th class="text-center">Loan Progress</th>
@@ -204,6 +207,7 @@
             <td>{{ isset($detail['position']) ? $detail['position'] : '' }}</td>
             <td>{{ isset($detail['allowance']) ? $detail['allowance'] : '' }}</td>
             <td>{{ isset($detail['plan_fee']) ? $detail['plan_fee'] : '' }}</td>
+            <td>{{ isset($detail['pro_rated_bill']) ? $detail['pro_rated_bill'] : '' }}</td>
             <td>{{ isset($detail['excess_balance']) ? $detail['excess_balance'] : '' }}</td>
             <td>{{ isset($detail['excess_balance_vat']) ? $detail['excess_balance_vat'] : '' }}</td>
             <td>{{ isset($detail['loan_progress']) ? $detail['loan_progress'] : '' }}</td>
@@ -222,5 +226,15 @@
 <script>
     let excess_ticket_{{ $ticket->id }}_table = new $('#excess_ticket_{{ $ticket->id }}_table').DataTable();
     overrideTable('excess_ticket_{{ $ticket->id }}');
+
+    let approver_total_table = new DataTable("#approver_total_table", {
+        searching: false,
+        info: false,
+        paging: false,
+    });
+
+    overrideTable('approver_total');
+    const data = {!! json_encode($ticket->request_details) !!}
+    getTotal(data);
 </script>
 @endif

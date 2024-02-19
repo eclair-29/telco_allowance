@@ -37,3 +37,4 @@
 </x-table>
 
 <script src="{{ asset('js/datatable_overrides.js') }}"></script>
+<script src="{{ asset('js/excess.js') }}"></script>

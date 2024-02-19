@@ -6,6 +6,7 @@ const excessTableCols = [
     { data: "position" },
     { data: "allowance" },
     { data: "plan_fee" },
+    { data: "pro_rated_bill" },
     { data: "excess_balance" },
     { data: "excess_balance_vat" },
     { data: "loan_progress" },
@@ -27,6 +28,12 @@ function cellAtrribute(cell) {
     cell.setAttribute("spellcheck", false);
 }
 
+function totalByAttribute(attribute) {
+    const excesses = excess_table.rows().data().toArray();
+    const reduced = excesses.reduce((acc, obj) => acc + obj[attribute], 0);
+    $("#total_" + attribute).text(parseFloatFixed(reduced));
+}
+
 function editExcessCell() {
     return [
         {
@@ -43,16 +50,95 @@ function editExcessCell() {
                     if (original !== e.target.textContent) {
                         const row = excess_table.row($(e.target).parent());
 
-                        const excess_balance = parseFloat(
+                        const pro_rated_bill = e.target.textContent
+                            ? parseFloatFixed(e.target.textContent)
+                            : null;
+
+                        const excess_balance_vat = parseFloatFixed(
+                            (row.data().plan_fee +
+                                row.data().excess_balance +
+                                pro_rated_bill) *
+                                0.12
+                        );
+
+                        const total_bill = parseFloatFixed(
+                            row.data().plan_fee +
+                                pro_rated_bill +
+                                excess_balance_vat +
+                                row.data().excess_balance +
+                                row.data().loan_fee +
+                                row.data().excess_charges_vat +
+                                row.data().excess_charges +
+                                row.data().non_vattable
+                        );
+
+                        excess_table
+                            .row($(e.target).parent())
+                            .data({
+                                ...row.data(),
+                                pro_rated_bill,
+                                excess_balance_vat,
+                                total_bill,
+                            })
+                            .draw(false);
+                    }
+                };
+
+                // $(cell).on("blur", function (e) {
+                //     handleCellEvent(e);
+                // });
+
+                $(cell).on("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        handleCellEvent(e);
+
+                        totalByAttribute("pro_rated_bill");
+                        totalByAttribute("total_bill");
+                        totalByAttribute("excess_balance_vat");
+                    }
+                });
+            },
+            targets: 7,
+        },
+        {
+            createdCell: function (cell) {
+                let original;
+
+                cellAtrribute(cell);
+
+                cell.addEventListener("focus", function (e) {
+                    original = e.target.textContent;
+                });
+
+                const handleCellEvent = (e) => {
+                    if (original !== e.target.textContent) {
+                        const row = excess_table.row($(e.target).parent());
+
+                        const allowanceMinusPlanFee = parseFloatFixed(
                             row.data().allowance - row.data().plan_fee
                         );
 
-                        const excess_charges = e.target.textContent
-                            ? parseFloatFixed(
-                                  e.target.textContent -
-                                      row.data().excess_balance
-                              )
-                            : null;
+                        const excess_balance =
+                            parseFloatFixed(e.target.textContent) <
+                            allowanceMinusPlanFee
+                                ? parseFloat(e.target.textContent)
+                                : allowanceMinusPlanFee;
+
+                        const excess_balance_vat = parseFloatFixed(
+                            (row.data().plan_fee +
+                                excess_balance +
+                                row.data().pro_rated_bill) *
+                                0.12
+                        );
+
+                        const excess_charges =
+                            parseFloatFixed(e.target.textContent) >
+                            allowanceMinusPlanFee
+                                ? parseFloatFixed(
+                                      e.target.textContent -
+                                          allowanceMinusPlanFee
+                                  )
+                                : null;
 
                         const excess_charges_vat = parseFloatFixed(
                             (row.data().loan_fee + excess_charges) * 0.12
@@ -60,41 +146,49 @@ function editExcessCell() {
 
                         const total_bill = parseFloatFixed(
                             row.data().plan_fee +
-                                row.data().excess_balance_vat +
-                                row.data().excess_balance +
+                                excess_balance_vat +
+                                excess_balance +
                                 row.data().loan_fee +
                                 excess_charges_vat +
                                 excess_charges +
-                                row.data().non_vattable
+                                row.data().pro_rated_bill,
+                            row.data().non_vattable
                         );
 
                         const deduction = parseFloatFixed(
                             row.data().loan_fee +
                                 excess_charges_vat +
-                                excess_charges
+                                excess_charges +
+                                row.data().non_vattable
                         );
 
                         excess_table
                             .row($(e.target).parent())
                             .data({
                                 ...row.data(),
+                                excess_balance,
                                 excess_charges,
+                                excess_balance_vat,
                                 excess_charges_vat,
                                 total_bill,
                                 deduction,
                             })
                             .draw(false);
 
-                        console.log("Row changed: ", {
-                            ...row.data(),
-                            excess_balance: parseFloat(e.target.textContent),
-                        });
+                        totalByAttribute("non_vattable");
+                        totalByAttribute("deduction");
+                        totalByAttribute("pro_rated_bill");
+                        totalByAttribute("excess_balance");
+                        totalByAttribute("excess_charges");
+                        totalByAttribute("excess_balance_vat");
+                        totalByAttribute("excess_charges_vat");
+                        totalByAttribute("total_bill");
                     }
                 };
 
-                $(cell).on("blur", function (e) {
-                    handleCellEvent(e);
-                });
+                // $(cell).on("blur", function (e) {
+                //     handleCellEvent(e);
+                // });
 
                 $(cell).on("keydown", function (e) {
                     if (e.key === "Enter") {
@@ -102,7 +196,7 @@ function editExcessCell() {
                     }
                 });
             },
-            targets: 11,
+            targets: 12,
         },
         {
             createdCell: function (cell) {
@@ -128,7 +222,7 @@ function editExcessCell() {
                     }
                 });
             },
-            targets: 16,
+            targets: 17,
         },
     ];
 }
@@ -156,6 +250,12 @@ let excess_table = new DataTable("#excess_table", {
     columns: excessTableCols,
 });
 
+let publisher_total_table = new DataTable("#publisher_total_table", {
+    searching: false,
+    paging: false,
+    info: false,
+});
+
 function overrideTable(id) {
     const entries = $(`#${id}_table_length`);
     const search = $(`#${id}_table_filter`);
@@ -175,3 +275,4 @@ overrideTable("plans");
 overrideTable("loans");
 overrideTable("excess");
 overrideTable("tickets");
+overrideTable("publisher_total");

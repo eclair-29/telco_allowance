@@ -23,9 +23,9 @@
                             <button type="button" class="btn btn-outline-dark" id="generate_worksheet_btn">
                                 Generate
                             </button>
-                            <button type="button" class="btn btn-outline-dark" id="download_worksheet">
+                            <a class="btn btn-outline-dark" id="download_worksheet">
                                 Download
-                            </button>
+                            </a>
                         </div>
 
                         <div class="btn-group" role="group">
@@ -43,6 +43,10 @@
                         <span class="fw-bold d-block" id="status_header"></span>
                     </div>
 
+                    <div id="publisher_total" hidden>
+                        <x-total :view="'publisher_'" :excesses="$excesses" />
+                    </div>
+
                     <x-table :id="'excess_table'">
                         <thead>
                             <tr>
@@ -53,6 +57,7 @@
                                 <th class="text-center">Position</th>
                                 <th class="text-center">Allowance</th>
                                 <th class="text-center">Plan Fee</th>
+                                <th class="text-center">Prorated Bill</th>
                                 <th class="text-center">Excess Usage</th>
                                 <th class="text-center">VAT</th>
                                 <th class="text-center">Loan Progress</th>

@@ -4,6 +4,24 @@ function setControlBtnStatus(status) {
     $("#publish_worksheet").attr("disabled", status);
 }
 
+function getTotal(excesses, attribute) {
+    const reduced = excesses.reduce((acc, obj) => acc + obj[attribute], 0);
+    $("#total_" + attribute).text(parseFloatFixed(reduced));
+}
+
+const totals = (excesses) => {
+    getTotal(excesses, "allowance");
+    getTotal(excesses, "deduction");
+    getTotal(excesses, "non_vattable");
+    getTotal(excesses, "plan_fee");
+    getTotal(excesses, "pro_rated_bill");
+    getTotal(excesses, "excess_balance");
+    getTotal(excesses, "excess_charges");
+    getTotal(excesses, "excess_balance_vat");
+    getTotal(excesses, "excess_charges_vat");
+    getTotal(excesses, "total_bill");
+};
+
 function generateWorksheet() {
     $.ajax({
         type: "get",
@@ -12,6 +30,8 @@ function generateWorksheet() {
             if (response.data) {
                 excess_table.clear().draw();
                 excess_table.rows.add(response.data).draw();
+
+                totals(response.data);
                 setControlBtnStatus(false);
             } else {
                 alert(response.alert);
@@ -31,6 +51,13 @@ function getExcessesBySeries(series_id) {
         success: function (response) {
             excess_table.clear().draw();
             excess_table.rows.add(response.data).draw();
+
+            totals(response.data);
+
+            $("#download_worksheet").attr(
+                "href",
+                `${baseUrl}/publisher/download?series_id=${series_id}`
+            );
 
             $("#status_header").text("Status: ");
             $("#status_header").append(
@@ -91,6 +118,8 @@ $("#series_select").on("change", function () {
     $("#series_header").text(
         $(this).find(":selected").text() + " Telco Rundown"
     );
+
+    $("#publisher_total").attr("hidden", false);
 });
 
 $("#save_worksheet").on("click", function () {
@@ -103,4 +132,8 @@ $("#publish_worksheet").on("click", function () {
     if (notes) {
         getWorksheetAction("publish", notes);
     }
+});
+
+$("#download_worksheet").on("click", function () {
+    document.getElementById("download_worksheet").click();
 });

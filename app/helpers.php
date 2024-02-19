@@ -90,6 +90,7 @@ function getExcessesBySeries($series)
             pos.description as 'position',
             a.allowance,
             plan.subscription_fee as 'plan_fee',
+            e.pro_rated_bill,
             e.excess_balance,
             e.excess_balance_vat,
             if(
@@ -128,4 +129,33 @@ function updateTicketByApprover($ticket, $props)
         'checked_by'    => $props['user']->name,
         'action_id'     => $props['action']->id
     ]);
+}
+
+function downloadExcesses($seriesId)
+{
+    $consolidatedExcesses['data'] = DB::table('vw_consolidated_excesses')
+        ->select(
+            'account_no',
+            'phone_no',
+            'assignee_code',
+            'assignee',
+            'position',
+            'allowance',
+            'plan_fee',
+            'pro_rated_bill',
+            'excess_balance',
+            'excess_balance_vat',
+            'loan_progress',
+            'loan_fee',
+            'excess_charges',
+            'excess_charges_vat',
+            'non_vattable',
+            'total_bill',
+            'deduction',
+            'notes',
+        )
+        ->where('series_id', $seriesId)
+        ->get();
+
+    return $consolidatedExcesses;
 }

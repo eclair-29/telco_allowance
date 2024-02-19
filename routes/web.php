@@ -42,6 +42,7 @@ Route::group(['middleware' => ['role:publisher']], function () {
     Route::get('/publisher/generate', [PublisherController::class, 'generate'])->name('publisher.generate');
     Route::post('/publisher/publish', [PublisherController::class, 'publish']);
     Route::post('/publisher/save', [PublisherController::class, 'save']);
+    Route::get('/publisher/download', [PublisherController::class, 'download']);
     Route::get('/publisher/get_excesses', [PublisherController::class, 'getExcessesBySeries']);
 });
 

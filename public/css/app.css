@@ -85,7 +85,7 @@ table tbody tr:last-child td {
 }
 
 table thead th:last-child,
-table tbody td:last-child:not(#excess_table tbody td:nth-child(17)),
+table tbody td:last-child:not(#excess_table tbody td:nth-child(18)),
 table tfoot th:last-child {
   border-right: 1px solid #dee2e6 !important;
 }
@@ -155,27 +155,29 @@ tfoot th {
 }
 
 
-#excess_table thead th:nth-child(12),
-#excess_table thead th:nth-child(17) {
+#excess_table thead th:nth-child(8),
+#excess_table thead th:nth-child(13),
+#excess_table thead th:nth-child(18) {
     border: 1px solid #198754 !important;
 }
 
 #excess_table tbody td:nth-child(7),
-#excess_table tbody td:nth-child(11),
-#excess_table tbody td:nth-child(16) {
+#excess_table tbody td:nth-child(12),
+#excess_table tbody td:nth-child(17) {
     border-right: none !important;
 }
 
-#excess_table tbody td:nth-child(13) {
+#excess_table tbody td:nth-child(14) {
     border-left: none !important;
 }
 
-#excess_table tbody td:nth-child(17) {
+#excess_table tbody td:nth-child(18) {
     border-left: 1px solid #198754 !important;
 }
 
-#excess_table tbody tr:last-child td:nth-child(12),
-#excess_table tbody tr:last-child td:nth-child(17) {
+#excess_table tbody tr:last-child td:nth-child(8),
+#excess_table tbody tr:last-child td:nth-child(13),
+#excess_table tbody tr:last-child td:nth-child(18) {
     border-bottom: 1px solid #198754 !important;
 }
 
@@ -191,4 +193,12 @@ tfoot th {
 #status_header span {
     text-transform: capitalize;
     font-size: 11px !important;
+}
+
+#excesses_total_cell {
+    border-bottom: none !important;
+}
+
+#publisher_total_table_wrapper {
+    padding-bottom: 20px;
 }

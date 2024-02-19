@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExcessesExport;
 use Throwable;
 use Carbon\Carbon;
 use App\Models\Loan;
@@ -16,6 +17,7 @@ use App\Models\Position;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PublisherController extends Controller
 {
@@ -112,7 +114,7 @@ class PublisherController extends Controller
 
             return [
                 'response' => 'error',
-                'alert' => 'Unable to publish excess. Please contact ISD for assistance.' . $th
+                'alert' => 'Unable to publish excess. Please contact ISD for assistance.'
             ];
         }
     }
@@ -137,6 +139,7 @@ class PublisherController extends Controller
                             'excess_charges' => $excess['excess_charges'],
                             'non_vattable' => $excess['non_vattable'],
                             'notes' => $excess['notes'],
+                            'pro_rated_bill' => $excess['pro_rated_bill'],
                         ]);
                 }
             }
@@ -160,7 +163,7 @@ class PublisherController extends Controller
 
             return [
                 'response' => 'error',
-                'alert' => 'Error on saving worksheet. Please contact ISD for support.' . $th
+                'alert' => 'Error on saving worksheet. Please contact ISD for support.'
             ];
         }
     }
@@ -274,6 +277,13 @@ class PublisherController extends Controller
         }
     }
 
+    public function download(Request $request)
+    {
+        $excesses = downloadExcesses($request->series_id);
+        $series = Series::where('id', $request->series_id)->first();
+        return Excel::download(new ExcessesExport($excesses['data']), Str::replace(' ', '_', $series->description) . '_Telco_Excesses.xlsx');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -281,10 +291,13 @@ class PublisherController extends Controller
      */
     public function index()
     {
+        $currentSeries = Series::where('description', getCurrentSeries())->first();
         $series = Series::all();
+        $excesses = $currentSeries ? getExcessesBySeries($currentSeries) : [];
 
         return view('publisher.index', [
-            'series' => $series
+            'series' => $series,
+            'excesses' => $excesses
         ]);
     }
 
